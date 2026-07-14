@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --navy: #1e3a5f;
+  --navy-light: #2a4f7f;
+  --navy-deep: #0d1f35;
+  --silver: #8da3ba;
+  --silver-light: #b8ccd8;
+  --blue: #4a90c4;
+  --blue-light: #6aafd8;
+  --green: #00c896;
+  --red: #ff4757;
+  --yellow: #fbbf24;
+  --bg: #0a0e1a;
+  --bg2: #0f1422;
+  --card: #111827;
+  --border: rgba(30,58,95,0.4);
+  --border2: rgba(74,144,196,0.2);
+  --text: #e8edf5;
+  --text2: #8a9bb0;
+  --text3: #4a5a70;
+  --font: 'Inter', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --text-white: #ffffff;
+  --accent: #5cceff;
+}
+
+[data-theme="light"] {
+  --bg: #ffffff;
+  --bg2: #f8fafc;
+  --card: #f1f5f9;
+  --border: rgba(30,58,95,0.15);
+  --border2: rgba(74,144,196,0.3);
+  --text: #0a0e1a;
+  --text2: #4a5a70;
+  --text3: #8a9bb0;
+  --text-white: #0a0e1a; /* Assuming we want a dark equivalent in light mode or just use literal white and cyan */
+}
+
+@theme {
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-zinc-50: #f0f4f8;
+  --color-zinc-100: #e8edf5;
+  --color-zinc-200: #b8ccd8;
+  --color-zinc-300: #8da3ba;
+  --color-zinc-400: #8a9bb0;
+  --color-zinc-500: #4a5a70;
+  --color-zinc-600: #2a4f7f;
+  --color-zinc-700: #1e3a5f;
+  --color-zinc-800: rgba(30,58,95,0.4);
+  --color-zinc-900: #0f1422;
+  --color-zinc-950: #0a0e1a;
+  
+  --color-blue-400: #6aafd8;
+  --color-blue-500: #4a90c4;
+  --color-blue-600: #1e3a5f;
+}
+
+html {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+body {
+  font-family: var(--font);
+  background-color: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Numeric Typography Update */
+.gradient-text {
+  background: linear-gradient(135deg, var(--text-white) 30%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tabular-nums,
+.font-mono {
+  font-family: 'Inter', sans-serif !important;
+  font-variant-numeric: tabular-nums;
+  text-shadow: none !important;
+}
+
+.price-value {
+  font-family: 'Inter', sans-serif !important;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+}
+
+.numeric-value {
+  font-family: 'Inter', sans-serif !important;
+  font-variant-numeric: tabular-nums;
+  text-shadow: none !important;
+}
+
+@keyframes aurora1 {
+  0% { transform: translate3d(0px, 0px, 0px) scale(1); }
+  33% { transform: translate3d(50px, 70px, 0px) scale(1.08); }
+  66% { transform: translate3d(-40px, 50px, 0px) scale(0.94); }
+  100% { transform: translate3d(0px, 0px, 0px) scale(1); }
+}
+
+@keyframes aurora2 {
+  0% { transform: translate3d(0px, 0px, 0px) scale(1); }
+  33% { transform: translate3d(-60px, -50px, 0px) scale(1.06); }
+  66% { transform: translate3d(40px, -70px, 0px) scale(0.93); }
+  100% { transform: translate3d(0px, 0px, 0px) scale(1); }
+}
+
+@keyframes aurora3 {
+  0% { transform: translate3d(0px, 0px, 0px) scale(1); }
+  33% { transform: translate3d(70px, -40px, 0px) scale(1.07); }
+  66% { transform: translate3d(-50px, -60px, 0px) scale(0.96); }
+  100% { transform: translate3d(0px, 0px, 0px) scale(1); }
+}
+
+.animate-aurora-1 {
+  animation: aurora1 20s ease-in-out infinite;
+}
+
+.animate-aurora-2 {
+  animation: aurora2 24s ease-in-out infinite;
+}
+
+.animate-aurora-3 {
+  animation: aurora3 28s ease-in-out infinite;
+}
+
+
+

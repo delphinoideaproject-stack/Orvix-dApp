@@ -1,0 +1,6 @@
+{
+  "name": "Orvix Protocol",
+  "description": "Deterministic Web3 token discovery protocol and AMM V2 launcher on BNB Chain",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
