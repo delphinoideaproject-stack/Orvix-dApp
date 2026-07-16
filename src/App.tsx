@@ -13,6 +13,7 @@ import { ArchivePage } from './pages/ArchivePage';
 import { HistoryPage } from './pages/HistoryPage';
 import { SwapPage } from './pages/SwapPage';
 import { SubmitWizard } from './pages/SubmitWizard';
+import { CreatorPortalPage } from './pages/CreatorPortalPage';
 import { StaticPage } from './pages/StaticPage';
 import { TokenDetailPage } from './pages/TokenDetailPage';
 import { SettingsModal } from './components/SettingsModal';
@@ -156,7 +157,7 @@ export default function App() {
     { label: 'Home', page: 'HOME', icon: Home },
             { label: 'History', page: 'HISTORY', icon: History },
     { label: 'Trade Terminal', page: 'SWAP', icon: ArrowLeftRight },
-    { label: 'Submit Token', page: 'SUBMIT', icon: Send },
+    { label: 'Creator Portal', page: 'CREATOR_PORTAL', icon: Send },
     { label: 'Documentation', page: 'DOCS', icon: BookOpen },
     { label: 'Whitepaper', page: 'WHITEPAPER', icon: FileText },
     { label: 'Contact Us', page: 'CONTACT', icon: Mail },
@@ -218,6 +219,15 @@ export default function App() {
             onModalOpenChange={setIsSwapModalOpen} 
             preselectedToken={quickTradeToken}
             onClearPreselectedToken={() => setQuickTradeToken(null)}
+          />
+        );
+      case 'CREATOR_PORTAL':
+        return (
+          <CreatorPortalPage 
+            walletConnected={isConnected}
+            walletAddress={address}
+            onOpenWalletModal={() => open()}
+            onNavigate={handleNavigate}
           />
         );
       case 'SUBMIT':

@@ -367,7 +367,7 @@ export function SubmitWizard({
                   className="w-full bg-transparent border border-zinc-300 dark:border-zinc-700 rounded-lg px-4 py-2 font-mono text-sm text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-blue-500 outline-none placeholder:text-zinc-400 dark:placeholder:text-zinc-600" 
                   placeholder="0x1234567890abcdef1234567890abcdef12345678" 
                 />
-                {isLoadingToken && <p className="text-xs text-blue-500 mt-1 flex items-center"><div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mr-2" /> Auto-reading contract information...</p>}
+                {isLoadingToken && <div className="text-xs text-blue-500 mt-1 flex items-center"><div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mr-2" /> Auto-reading contract information...</div>}
                 {tokenError && <p className="text-xs text-red-500 mt-1">{tokenError}</p>}
               </div>
 

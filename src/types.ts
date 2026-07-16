@@ -5,6 +5,7 @@ export type Page =
   | 'HISTORY' 
   | 'SWAP' 
   | 'SUBMIT' 
+  | 'CREATOR_PORTAL'
   | 'DOCS' 
   | 'WHITEPAPER' 
   | 'CONTACT' 
@@ -12,6 +13,14 @@ export type Page =
   | 'TERMS'
   | 'TOKEN_DETAIL'
   | 'WATCHLIST';
+
+export interface Story {
+  id: string;
+  tokenId: string;
+  imageUrl: string;
+  text: string;
+  timestamp: number;
+}
 
 export interface Token {
   id: string;
@@ -43,4 +52,5 @@ export interface Token {
   telegram?: string;
   github?: string;
   documentation?: string;
+  stories?: Story[];
 }

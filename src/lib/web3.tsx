@@ -337,10 +337,12 @@ export function WalletModal({ isOpen, onClose }: { isOpen?: boolean; onClose?: (
   useEffect(() => {
     if (openState) {
       const wallets = [
-        { id: 'metamask', name: 'MetaMask', desc: 'Connect with MetaMask browser extension', icon: '🦊', available: !!(window as any).ethereum },
-        { id: 'binance', name: 'Binance Wallet', desc: 'Connect with Binance Web3 Wallet', icon: binanceIconSvg, available: !!(window as any).BinanceChain || !!(window as any).ethereum },
-        { id: 'trust', name: 'Trust Wallet', desc: 'Connect with Trust Wallet', icon: '🛡️', available: !!(window as any).trustwallet || !!(window as any).ethereum },
-        { id: 'okx', name: 'OKX Wallet', desc: 'Connect with OKX Wallet', icon: '🟢', available: !!(window as any).okxwallet || !!(window as any).ethereum }
+        { id: 'metamask', name: 'MetaMask', desc: 'Connect with MetaMask browser extension', icon: 'https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg', available: true },
+        { id: 'walletconnect', name: 'WalletConnect', desc: 'Connect with WalletConnect protocol', icon: 'https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Logo/Icon/Logo%20-%20Blue%20Icon.svg', available: true },
+        { id: 'trust', name: 'Trust Wallet', desc: 'Connect with Trust Wallet', icon: 'https://avatars.githubusercontent.com/u/32135000?s=200&v=4', available: true },
+        { id: 'binance', name: 'Binance Wallet', desc: 'Connect with Binance Web3 Wallet', icon: binanceIconSvg, available: true },
+        { id: 'coinbase', name: 'Coinbase Wallet', desc: 'Connect with Coinbase Wallet', icon: 'https://static-00.iconduck.com/assets.00/coinbase-wallet-icon-512x512-h3dl1605.png', available: true },
+        { id: 'rabby', name: 'Rabby Wallet', desc: 'Connect with Rabby Wallet', icon: 'https://rabby.io/assets/images/logo.svg', available: true }
       ];
       setDetected(wallets);
     }

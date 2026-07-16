@@ -8,6 +8,8 @@ import { Button } from './Button';
 import { Star, Globe, Send, Github, BookOpen, ExternalLink, Copy, Check } from 'lucide-react';
 import { useWatchlist } from '../hooks/useWatchlist';
 import { getExplorerUrl } from '../contracts/config';
+import { useTokenStories } from '../hooks/useTokenStories';
+import { StoryViewerModal } from './StoryViewerModal';
 
 
 export interface TokenAction {
@@ -57,47 +59,64 @@ export const TokenRow: React.FC<TokenRowProps> = ({
   index = 0 
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showStory, setShowStory] = useState(false);
   const { isInWatchlist, toggleWatchlist } = useWatchlist();
   const isPositive = token.priceChange >= 0;
   const isWatched = isInWatchlist(token.id);
+  const stories = useTokenStories(token.id);
+  const hasActiveStories = stories.length > 0;
 
   return (
-    <motion.div 
-      onClick={() => onSelect?.(token)}
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ 
-        duration: 0.4, 
-        ease: [0.16, 1, 0.3, 1],
-        delay: Math.min(index, 8) * 0.05 
-      }}
-      whileHover={{ 
-        y: -3,
-        scale: 1.01,
-        boxShadow: "0 12px 30px -10px rgba(0,0,0,0.08)",
-      }}
-      className="border border-[var(--border)] rounded-3xl bg-[var(--card)] p-4 sm:p-6 mb-6 flex flex-col hover:border-blue-500/60 dark:hover:border-blue-500/60 transition-all duration-300 cursor-pointer group relative shadow-sm"
-    >
-      {/* Watchlist Star */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          toggleWatchlist(token.id);
+    <>
+      {showStory && <StoryViewerModal token={token} stories={stories} onClose={() => setShowStory(false)} />}
+      <motion.div 
+        onClick={() => onSelect?.(token)}
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ 
+          duration: 0.4, 
+          ease: [0.16, 1, 0.3, 1],
+          delay: Math.min(index, 8) * 0.05 
         }}
-        className={`absolute top-5 right-5 sm:top-6 sm:right-6 p-2 rounded-full transition-colors z-10 ${
-          isWatched 
-            ? 'text-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' 
-            : 'text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800'
-        }`}
+        whileHover={{ 
+          y: -3,
+          scale: 1.01,
+          boxShadow: "0 12px 30px -10px rgba(0,0,0,0.08)",
+        }}
+        className="border border-[var(--border)] rounded-3xl bg-[var(--card)] p-4 sm:p-6 mb-6 flex flex-col hover:border-blue-500/60 dark:hover:border-blue-500/60 transition-all duration-300 cursor-pointer group relative shadow-sm"
       >
-        <Star className="w-5 h-5" fill={isWatched ? "currentColor" : "none"} />
-      </button>
+        {/* Watchlist Star */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleWatchlist(token.id);
+          }}
+          className={`absolute top-5 right-5 sm:top-6 sm:right-6 p-2 rounded-full transition-colors z-10 ${
+            isWatched 
+              ? 'text-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' 
+              : 'text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+          }`}
+        >
+          <Star className="w-5 h-5" fill={isWatched ? "currentColor" : "none"} />
+        </button>
 
-      {/* 1, 2, 3, 4, 5. Layout Priority: Project Name, Pair, Listed Time, Price, Change % */}
-      <div className="relative mb-4 sm:mb-6">
-        <TokenLogo tokenId={token.logo} className="w-12 h-12 sm:w-14 sm:h-14 mb-3 sm:mb-4" />
-        
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        {/* 1, 2, 3, 4, 5. Layout Priority: Project Name, Pair, Listed Time, Price, Change % */}
+        <div className="relative mb-4 sm:mb-6">
+          <div 
+            className={`inline-block mb-3 sm:mb-4 rounded-full p-[3px] transition-transform ${hasActiveStories ? 'bg-gradient-to-tr from-pink-500 via-red-500 to-yellow-500 hover:scale-105 cursor-pointer' : ''}`}
+            onClick={(e) => {
+              if (hasActiveStories) {
+                e.stopPropagation();
+                setShowStory(true);
+              }
+            }}
+          >
+            <div className={`rounded-full ${hasActiveStories ? 'bg-[var(--card)] p-[2px]' : ''}`}>
+              <TokenLogo tokenId={token.logo} className="w-12 h-12 sm:w-14 sm:h-14" />
+            </div>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div className="pr-12 sm:pr-0">
             {/* 1. Project Name */}
             <h3 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-zinc-100">{token.name}</h3>
@@ -358,6 +377,7 @@ export const TokenRow: React.FC<TokenRowProps> = ({
         </div>
       </div>
     </motion.div>
+    </>
   );
 };
 
