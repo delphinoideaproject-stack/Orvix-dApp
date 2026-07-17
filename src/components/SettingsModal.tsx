@@ -13,8 +13,7 @@ interface SettingsModalProps {
 }
 
 export function SettingsModal({ isOpen, onClose, theme, setTheme, language, setLanguage, onOpenPromptModal }: SettingsModalProps) {
-  const [rpcMainnet, setRpcMainnet] = useState('');
-  const [rpcTestnet, setRpcTestnet] = useState('');
+  const [rpcUrl, setRpcUrl] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -25,8 +24,7 @@ export function SettingsModal({ isOpen, onClose, theme, setTheme, language, setL
       if (settingsStr) {
         try {
           const settings = JSON.parse(settingsStr);
-          setRpcMainnet(settings.rpcUrlMainnet || '');
-          setRpcTestnet(settings.rpcUrlTestnet || '');
+          setRpcUrl(settings.rpcUrlTestnet || '');
         } catch(e) {}
       }
     }
@@ -48,19 +46,10 @@ export function SettingsModal({ isOpen, onClose, theme, setTheme, language, setL
     setErrorMsg('');
 
     // Test RPC connectivity
-    if (rpcMainnet.trim()) {
-      const isMainnetValid = await testRpcConnection(rpcMainnet.trim());
-      if (!isMainnetValid) {
-        setErrorMsg('Failed to connect to Mainnet RPC URL');
-        setIsSaving(false);
-        return;
-      }
-    }
-
-    if (rpcTestnet.trim()) {
-      const isTestnetValid = await testRpcConnection(rpcTestnet.trim());
-      if (!isTestnetValid) {
-        setErrorMsg('Failed to connect to Testnet RPC URL');
+    if (rpcUrl.trim()) {
+      const isValid = await testRpcConnection(rpcUrl.trim());
+      if (!isValid) {
+        setErrorMsg('Failed to connect to RPC URL');
         setIsSaving(false);
         return;
       }
@@ -74,12 +63,11 @@ export function SettingsModal({ isOpen, onClose, theme, setTheme, language, setL
       } catch(e) {}
     }
     
-    const hasChanged = settings.rpcUrlMainnet !== rpcMainnet.trim() || settings.rpcUrlTestnet !== rpcTestnet.trim();
+    const hasChanged = settings.rpcUrlTestnet !== rpcUrl.trim();
 
     settings = {
       ...settings,
-      rpcUrlMainnet: rpcMainnet.trim(),
-      rpcUrlTestnet: rpcTestnet.trim()
+      rpcUrlTestnet: rpcUrl.trim()
     };
     localStorage.setItem('orvix_settings', JSON.stringify(settings));
     setIsSaving(false);
@@ -122,22 +110,11 @@ export function SettingsModal({ isOpen, onClose, theme, setTheme, language, setL
           </label>
           <div className="space-y-3">
             <div>
-              <label className="text-xs text-zinc-500 mb-1 block">Mainnet RPC URL</label>
+              <label className="text-xs text-zinc-500 mb-1 block">RPC URL</label>
               <input 
                 type="text" 
-                value={rpcMainnet}
-                onChange={(e) => setRpcMainnet(e.target.value)}
-                placeholder="https://bsc-dataseed.binance.org/"
-                className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm text-zinc-100 focus:border-blue-500 outline-none transition-colors"
-                disabled={isSaving}
-              />
-            </div>
-            <div>
-              <label className="text-xs text-zinc-500 mb-1 block">Testnet RPC URL</label>
-              <input 
-                type="text" 
-                value={rpcTestnet}
-                onChange={(e) => setRpcTestnet(e.target.value)}
+                value={rpcUrl}
+                onChange={(e) => setRpcUrl(e.target.value)}
                 placeholder="https://data-seed-prebsc-1-s1.binance.org:8545/"
                 className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm text-zinc-100 focus:border-blue-500 outline-none transition-colors"
                 disabled={isSaving}

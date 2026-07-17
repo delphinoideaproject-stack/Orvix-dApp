@@ -46,22 +46,22 @@ export function Header({
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-[var(--border)] bg-[#050b14]/75 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center cursor-pointer" onClick={() => setCurrentPage('HOME')}>
-            <OrvixLogo className="h-8 text-zinc-900 dark:text-zinc-100 w-auto" />
+            <OrvixLogo className="h-8 text-[#5cceff] w-auto" />
           </div>
 
           <div className="hidden md:block flex-1 max-w-md mx-6">
             <div className="relative group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 group-focus-within:text-blue-500 transition-colors" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text2)] group-focus-within:text-[#5cceff] transition-colors" />
               <input 
                 type="text" 
                 placeholder="Search by name or contract..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="w-full bg-zinc-100 dark:bg-zinc-900 border border-transparent focus:border-zinc-300 dark:focus:border-zinc-700 rounded-lg pl-10 pr-4 py-2 text-sm text-zinc-900 dark:text-zinc-100 outline-none transition-all placeholder:text-zinc-500"
+                className="w-full bg-[#08101e]/60 border border-[var(--border)] focus:border-[#5cceff]/40 rounded-lg pl-10 pr-4 py-2 text-sm text-white outline-none transition-all placeholder:text-[var(--text3)]"
               />
             </div>
           </div>
@@ -71,31 +71,31 @@ export function Header({
               <button
                 key={item.label}
                 onClick={() => setCurrentPage(item.page)}
-                className={cn("px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer", 
+                className={cn("px-3 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer border", 
                   currentPage === item.page 
-                    ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100" 
-                    : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                    ? "bg-[#1e3a5f]/40 border-[#5cceff]/30 text-[#5cceff]" 
+                    : "text-[var(--text2)] border-transparent hover:text-white hover:bg-[#1e3a5f]/20"
                 )}
               >
                 {item.label}
               </button>
             ))}
-            <span className="px-3 py-2 text-sm font-medium text-zinc-400 dark:text-zinc-600 cursor-not-allowed">
+            <span className="px-3 py-2 text-sm font-medium text-zinc-500/80 cursor-not-allowed">
               AI (Future)
             </span>
             <button
               onClick={cycleTheme}
-              className="p-2 rounded-lg text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              className="p-2 rounded-lg text-[var(--text2)] hover:bg-[#1e3a5f]/30 hover:text-white transition-colors cursor-pointer"
               aria-label="Toggle theme"
             >
               <ThemeIcon className="w-5 h-5" />
             </button>
             <Button size="sm" className="hidden lg:flex items-center gap-2" onClick={open} variant={isConnected ? 'secondary' : 'primary'}>
-              <Wallet className="w-4 h-4 text-emerald-400" />
+              <Wallet className="w-4 h-4 text-[#5cceff]" />
               {isConnected ? (
                 <div className="flex flex-col items-start leading-tight">
-                  <span className="text-xs font-bold text-emerald-400">${balanceInUsd}</span>
-                  <span className="text-[10px] text-zinc-400 font-mono">{shortAddress}</span>
+                  <span className="text-xs font-bold text-white">${balanceInUsd}</span>
+                  <span className="text-[10px] text-[var(--text2)] font-mono">{shortAddress}</span>
                 </div>
               ) : (
                 'Connect Wallet'
@@ -105,12 +105,12 @@ export function Header({
 
           <div className="flex items-center md:hidden gap-2">
             <Button size="sm" className="flex items-center gap-2" variant={isConnected ? 'secondary' : 'outline'} onClick={open}>
-              <Wallet className="w-4 h-4 text-emerald-400" />
+              <Wallet className="w-4 h-4 text-[#5cceff]" />
               <span className="hidden sm:inline">{isConnected ? `$${balanceInUsd}` : 'Connect'}</span>
             </Button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-md text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
+              className="p-2 rounded-md text-[var(--text2)] hover:bg-[#1e3a5f]/30 hover:text-white cursor-pointer"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>

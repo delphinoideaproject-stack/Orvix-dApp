@@ -128,7 +128,7 @@ export function SubmitWizard({
         
         setIsLoadingToken(false);
       } catch (err) {
-        console.error(err);
+        console.warn("API Error:", err?.message || err);
         setTokenError('Unable to fetch token data. Please verify the contract address.');
         setIsLoadingToken(false);
       }
@@ -209,7 +209,7 @@ export function SubmitWizard({
       setShowConfirmModal(false);
       setShowSuccessModal(true);
     } catch (err: any) {
-      console.error(err);
+      console.warn("API Error:", err?.message || err);
       setIsDepositing(false);
       alert("Deposit failed: " + (err.message || "Unknown error"));
     }
@@ -253,7 +253,7 @@ export function SubmitWizard({
       setIsSubmitting(false);
       setStep(6);
     } catch (err) {
-      console.error(err);
+      console.warn("API Error:", err?.message || err);
     } finally {
       setIsSubmitting(false);
     }
@@ -269,7 +269,7 @@ export function SubmitWizard({
   ];
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12 sm:py-20">
+    <div className="w-full">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-6">Submit Token</h1>
         

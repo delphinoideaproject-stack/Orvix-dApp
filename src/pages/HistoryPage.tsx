@@ -19,7 +19,7 @@ export function HistoryPage({ tokens, searchQuery = '' }: HistoryPageProps) {
   );
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="w-full">
       {/* Page Header */}
       <div className="mb-10 pb-6 border-b border-[#1e3a5f]/15">
         <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-2 tracking-tight">History</h1>

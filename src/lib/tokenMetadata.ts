@@ -6,8 +6,8 @@ const CACHE_TIMESTAMP_KEY = 'orvix_token_metadata_timestamp';
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
 
-const network = typeof window !== 'undefined' ? localStorage.getItem('orvix_network') : 'mainnet';
-const isTestnet = network === 'testnet';
+const network = 'testnet';
+const isTestnet = true;
 
 const DEFAULT_TOKENS_TESTNET: Token[] = [
   {

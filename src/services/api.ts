@@ -1,6 +1,4 @@
-import { getEffectiveRpcUrl } from '../contracts/config';
-
-const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
+const API_BASE = (import.meta as any).env?.VITE_API_URL || 'https://orvixbackend.vercel.app/api';
 
 export interface PoolAssessmentResponse {
   success: boolean;
@@ -30,42 +28,135 @@ export interface QuoteResponse {
   error?: string;
 }
 
-export async function fetchPools(tokenIn: string, tokenOut: string, amountIn: string): Promise<PoolAssessmentResponse> {
-  const rpcUrl = getEffectiveRpcUrl();
-  const res = await fetch(`${API_BASE}/pool-assessment`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ tokenIn, tokenOut, amountIn, rpcUrl })
-  });
-  return res.json();
+export async function fetchPools(tokenIn: string, tokenOut: string, amountIn: string, userAddress: string): Promise<PoolAssessmentResponse> {
+  if (!userAddress) {
+    return { success: false, error: 'User address is required' };
+  }
+  
+  try {
+    const res = await fetch(`${API_BASE}/assess-pools`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token_in: tokenIn, token_out: tokenOut, amount_in: amountIn, user_address: userAddress, raw_mode: false })
+    });
+    
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      return { success: false, error: errorData.error || 'Failed to fetch pools' };
+    }
+    
+    const data = await res.json();
+    return {
+      success: true,
+      assessments: data.assessments?.map((a: any) => ({
+        pool: a.pool,
+        output: a.output,
+        liquidity: a.liquidity,
+        priceImpact: a.price_impact_bps,
+        score: parseFloat(a.score || '0'),
+        eligible: a.eligible,
+        failReason: a.fail_reason_code
+      }))
+    };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
 }
 
-export async function getQuotes(tokenIn: string, tokenOut: string, amountIn: string, slippageBps: number = 50): Promise<QuoteResponse> {
-  const rpcUrl = getEffectiveRpcUrl();
-  const res = await fetch(`${API_BASE}/quote`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ tokenIn, tokenOut, amountIn, slippageBps, rpcUrl })
-  });
-  return res.json();
+export async function getQuotes(tokenIn: string, tokenOut: string, amountIn: string, slippageBps: number = 50, userAddress: string): Promise<QuoteResponse> {
+  if (!userAddress) {
+    return { success: false, error: 'User address is required' };
+  }
+  
+  try {
+    const res = await fetch(`${API_BASE}/quote`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token_in: tokenIn, token_out: tokenOut, amount_in: amountIn, slippage_bps: slippageBps, user_address: userAddress })
+    });
+    
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      return { success: false, error: errorData.error || 'Failed to fetch quote' };
+    }
+    
+    const data = await res.json();
+    return {
+      success: true,
+      quote: {
+        amountOut: data.amount_out,
+        priceImpact: data.price_impact_bps,
+        amountOutMin: data.amount_out_min,
+        path: data.path,
+        liquidityProfile: data.liquidity_profile,
+        poolLiquidity: data.pool_liquidity,
+        bestPool: data.best_pool
+      }
+    };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
 }
 
 export async function fetchBalance(tokenAddress: string, walletAddress: string) {
-  const rpcUrl = getEffectiveRpcUrl();
-  const res = await fetch(`${API_BASE}/balance`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ tokenAddress, walletAddress, rpcUrl })
-  });
-  return res.json();
+  if (!walletAddress) {
+    return { success: false, error: 'Wallet address is required' };
+  }
+  
+  try {
+    const isNative = tokenAddress === '0x0000000000000000000000000000000000000000' || !tokenAddress;
+    const endpoint = isNative ? '/native-balance' : '/token-info';
+    
+    const body = isNative 
+      ? { user_address: walletAddress }
+      : { address: tokenAddress, user_address: walletAddress };
+      
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      return { success: false, error: errorData.error || 'Failed to fetch balance' };
+    }
+    
+    const data = await res.json();
+    return {
+      success: true,
+      balance: data.balance,
+      decimals: data.decimals || 18,
+      symbol: data.symbol || 'BNB'
+    };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
 }
 
 export async function fetchAllowance(tokenAddress: string, ownerAddress: string, spenderAddress: string) {
-  const rpcUrl = getEffectiveRpcUrl();
-  const res = await fetch(`${API_BASE}/allowance`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ tokenAddress, ownerAddress, spenderAddress, rpcUrl })
-  });
-  return res.json();
+  if (!ownerAddress) {
+    return { success: false, error: 'Owner address is required' };
+  }
+  
+  try {
+    const res = await fetch(`${API_BASE}/allowance`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token_address: tokenAddress, user_address: ownerAddress, spender_address: spenderAddress })
+    });
+    
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      return { success: false, error: errorData.error || 'Failed to fetch allowance' };
+    }
+    
+    const data = await res.json();
+    return {
+      success: true,
+      allowance: data.allowance
+    };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
 }

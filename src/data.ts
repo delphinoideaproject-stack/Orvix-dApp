@@ -1,7 +1,7 @@
 import { Token } from './types';
 
-const network = typeof window !== 'undefined' ? localStorage.getItem('orvix_network') : 'mainnet';
-const isTestnet = network === 'testnet';
+const network = 'testnet';
+const isTestnet = true;
 
 export const mockTokensTestnet: Token[] = [
   {

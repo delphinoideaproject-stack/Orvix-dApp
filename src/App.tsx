@@ -51,14 +51,8 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [networkDropdownOpen, setNetworkDropdownOpen] = useState(false);
-  const currentNetwork = typeof window !== 'undefined' ? localStorage.getItem('orvix_network') || 'mainnet' : 'mainnet';
+  const currentNetwork = 'testnet';
   
-  const handleNetworkChange = (net: string) => {
-    localStorage.setItem('orvix_network', net);
-    window.location.reload();
-  };
-
   const { open: appKitOpen } = useAppKit();
   const { address, isConnected } = useAppKitAccount();
   const { isModalOpen, close, open: openWallet } = useWeb3();
@@ -74,7 +68,7 @@ export default function App() {
       .then(data => {
         if (data && data.price) setBnbPrice(Number(data.price));
       })
-      .catch(console.error);
+      .catch(() => {});
   }, []);
   
   const formattedBalance = balanceData ? Number(balanceData.value) / (10 ** balanceData.decimals) : 0;
@@ -287,30 +281,6 @@ export default function App() {
           <OrvixLogo className="h-7 w-auto text-[var(--text)]" />
         </div>
         <div className="flex items-center gap-4">
-          <div className="relative">
-            <button onClick={() => setNetworkDropdownOpen(!networkDropdownOpen)} className="text-[var(--text)] hover:text-white transition-colors p-1">
-              <Settings className="w-5 h-5 text-zinc-400 hover:text-white" />
-            </button>
-            
-            {networkDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-[var(--card)] border border-[var(--border)] rounded-xl shadow-2xl p-2 z-50">
-                <div className="text-[10px] uppercase tracking-wider font-mono text-zinc-400 mb-2 px-2">Pilih Jaringan</div>
-                <button 
-                  onClick={() => { handleNetworkChange('mainnet'); setNetworkDropdownOpen(false); }}
-                  className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg hover:bg-zinc-800 transition-colors ${currentNetwork === 'mainnet' ? 'text-[#f3ba2f]' : 'text-[var(--text)]'}`}
-                >
-                  BNB Mainnet {currentNetwork === 'mainnet' && <span className="w-2 h-2 rounded-full bg-[#f3ba2f] animate-pulse" />}
-                </button>
-                <button 
-                  onClick={() => { handleNetworkChange('testnet'); setNetworkDropdownOpen(false); }}
-                  className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg hover:bg-zinc-800 transition-colors ${currentNetwork === 'testnet' ? 'text-blue-400' : 'text-[var(--text)]'}`}
-                >
-                  tBNB Testnet {currentNetwork === 'testnet' && <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />}
-                </button>
-              </div>
-            )}
-          </div>
-
             <button onClick={() => { console.log('Mobile wallet button clicked'); openWallet(); }} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer z-50">
               {isConnected && balanceData ? (
                 <>
@@ -356,7 +326,7 @@ export default function App() {
             <span className="text-zinc-400">Network:</span>
             <span className="text-green-500 font-bold flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              {currentNetwork === 'testnet' ? 'AMM V2 · tBNB Testnet' : 'AMM V2 · BNB Chain'}
+              AMM V2 · BNB Chain
             </span>
           </div>
 
@@ -510,30 +480,6 @@ export default function App() {
               Submit Token
             </button>
 
-            <div className="relative">
-              <button onClick={() => setNetworkDropdownOpen(!networkDropdownOpen)} className="text-zinc-300 hover:text-white transition-colors p-1">
-                <Settings className="w-4 h-4 text-zinc-400 hover:text-white" />
-              </button>
-              
-              {networkDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-[var(--card)] border border-[var(--border)] rounded-xl shadow-2xl p-2 z-50">
-                  <div className="text-[10px] uppercase tracking-wider font-mono text-zinc-400 mb-2 px-2">Pilih Jaringan</div>
-                  <button 
-                    onClick={() => { handleNetworkChange('mainnet'); setNetworkDropdownOpen(false); }}
-                    className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg hover:bg-zinc-800 transition-colors ${currentNetwork === 'mainnet' ? 'text-[#f3ba2f]' : 'text-[var(--text)]'}`}
-                  >
-                    BNB Mainnet {currentNetwork === 'mainnet' && <span className="w-2 h-2 rounded-full bg-[#f3ba2f] animate-pulse" />}
-                  </button>
-                  <button 
-                    onClick={() => { handleNetworkChange('testnet'); setNetworkDropdownOpen(false); }}
-                    className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg hover:bg-zinc-800 transition-colors ${currentNetwork === 'testnet' ? 'text-blue-400' : 'text-[var(--text)]'}`}
-                  >
-                    tBNB Testnet {currentNetwork === 'testnet' && <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />}
-                  </button>
-                </div>
-              )}
-            </div>
-
             <button onClick={() => { console.log('Desktop wallet button clicked'); openWallet(); }} className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-medium transition-colors cursor-pointer z-50">
               {isConnected && balanceData ? (
                 <>
@@ -560,7 +506,7 @@ export default function App() {
         </header>
 
         {/* Page View Container */}
-        <div className={selectedToken ? "flex-1" : "flex-1 px-4 lg:px-12 py-8"}>
+        <div className={selectedToken ? "flex-1" : "w-full min-h-screen px-4 md:px-8 lg:px-12 py-8 flex-1"}>
           {renderPage()}
         </div>
 

@@ -241,7 +241,7 @@ export function TokenDetailPage({
           setLiveBasePair(token.pair || `${tokenSymbol}/USD`);
         }
       } catch (err) {
-        console.error("Failed to load on-chain market data:", err);
+        console.warn("Failed to load on-chain market data:", err);
         setLivePrice(token.price);
         setLiveLiquidity('$54,200');
         setLiveMcap('$1,250,000');
@@ -325,7 +325,7 @@ export function TokenDetailPage({
         </div>
       </div>
 
-      <div className="px-4 sm:px-6 -mt-8 relative z-20 max-w-3xl mx-auto space-y-6">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-12 -mt-8 relative z-20 w-full space-y-6">
         
         {/* Price Chart Card Container */}
         <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-zinc-200 dark:border-white/10 rounded-[20px] p-5 shadow-xl dark:shadow-2xl">
@@ -343,12 +343,8 @@ export function TokenDetailPage({
 
           {/* Chart Visualization */}
           <div className="w-full pb-2">
-            <div className="w-full h-80 bg-zinc-100 dark:bg-zinc-900/50 rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800">
-              <iframe 
-                src={`https://dexscreener.com/bsc/${token.contract}?embed=1&theme=dark&trades=0&info=0`}
-                className="w-full h-full border-0"
-                title={`${token.symbol} chart`}
-              />
+            <div className="w-full h-80 bg-zinc-100 dark:bg-zinc-900/50 rounded-xl flex items-center justify-center border border-zinc-200 dark:border-zinc-800">
+              <span className="text-zinc-400 font-mono text-sm">Chart Analytics (API Disabled)</span>
             </div>
           </div>
         </div>

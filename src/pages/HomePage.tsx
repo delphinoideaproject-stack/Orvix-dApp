@@ -133,9 +133,9 @@ export function HomePage({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+      className="w-full"
     >
-      <div className="mb-10 text-center max-w-3xl mx-auto">
+      <div className="mb-10 text-center w-full">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-[900] tracking-tight mb-4 gradient-text" style={{ fontFamily: "'Inter', sans-serif" }}>
           Smarter Discovery Starts Here
         </h1>

@@ -67,11 +67,11 @@ export function TokenListPage({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="w-full">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-10 pb-6 border-b border-zinc-200 dark:border-zinc-800">
         <div>
           <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-3 tracking-tight">{title}</h1>
-          <p className="text-zinc-600 dark:text-zinc-400 max-w-3xl whitespace-pre-line">{description}</p>
+          <p className="text-zinc-600 dark:text-zinc-400 w-full whitespace-pre-line">{description}</p>
         </div>
         {showExportButton && (
           <Button 

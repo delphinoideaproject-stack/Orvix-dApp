@@ -45,11 +45,11 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   const [isConnected, setIsConnected] = useState<boolean>(() => {
     return !!localStorage.getItem('orvix_connected_address');
   });
-  const [balance, setBalance] = useState('10000000000000000000'); // 10 BNB default for demo/testing
-  const [formattedBalance, setFormattedBalance] = useState(10.0);
-  const [balanceInUsd, setBalanceInUsd] = useState('6000.00');
+  const [balance, setBalance] = useState('0');
+  const [formattedBalance, setFormattedBalance] = useState(0.0);
+  const [balanceInUsd, setBalanceInUsd] = useState('0.00');
   const [symbol, setSymbol] = useState('BNB');
-  const [chainId, setChainId] = useState<number | null>(56); // BSC Mainnet default
+  const [chainId, setChainId] = useState<number | null>(97); // BSC Testnet default
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [provider, setProvider] = useState<any>(null);
   const [bnbPrice, setBnbPrice] = useState<number>(600);
@@ -89,18 +89,18 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
             setBalanceInUsd((numBal * bnbPrice).toFixed(2));
           }
         } else {
-          // Demo / simulated balance
           if (isMounted) {
-            setFormattedBalance(10.5);
-            setBalance('10500000000000000576');
-            setBalanceInUsd((10.5 * bnbPrice).toFixed(2));
+            setFormattedBalance(0);
+            setBalance('0');
+            setBalanceInUsd('0.00');
           }
         }
       } catch (err) {
-        console.error('Failed to fetch balance:', err);
+        console.warn('Failed to fetch balance:', err);
         if (isMounted) {
-          setFormattedBalance(10.5);
-          setBalanceInUsd((10.5 * bnbPrice).toFixed(2));
+          setFormattedBalance(0);
+          setBalance('0');
+          setBalanceInUsd('0.00');
         }
       }
     }
@@ -125,7 +125,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
               setAddress(accounts[0].address);
               ethProvider.getNetwork().then(net => setChainId(Number(net.chainId)));
             }
-          }).catch(console.error);
+          }).catch(() => {});
         } catch (e) {
           console.warn("Failed to init ethProvider:", e);
         }
@@ -232,29 +232,36 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     }
     try {
       const wallets = getDetectedWallets();
-      const target = wallets.find(w => w.id === walletId) || wallets[0];
-      if (!target || !target.provider) {
-        alert('No Web3 wallet detected. Please install MetaMask, Binance Wallet, Trust Wallet, or OKX Wallet.');
+      const target = wallets.find(w => w.id === walletId);
+      let browserProvider;
+      
+      if (target && target.provider && (typeof target.provider.request === 'function' || typeof target.provider.send === 'function')) {
+        browserProvider = new ethers.BrowserProvider(target.provider);
+        await browserProvider.send('eth_requestAccounts', []).catch(() => {});
+      } else {
+        alert('Tidak ada Web3 wallet terdeteksi. Silakan instal MetaMask, Binance Wallet, Trust Wallet, atau OKX Wallet.');
         return;
       }
+      
+      const signer = await browserProvider.getSigner();
+      const userAddress = await signer.getAddress();
+      const network = await browserProvider.getNetwork();
+      const chainIdNum = Number(network.chainId);
 
-      let browserProvider;
-      if (target.provider && (typeof target.provider.request === 'function' || typeof target.provider.send === 'function')) {
-        browserProvider = new ethers.BrowserProvider(target.provider);
-      } else {
-        browserProvider = new ethers.JsonRpcProvider(getEffectiveRpcUrl());
-      }
-
-      await browserProvider.send('eth_requestAccounts', []).catch(() => {});
-      let userAddress = '0x4F27fa7bAcDb9ABd8B07c038A0769b4c7063ddbC';
-      let chainIdNum = ORVIX_CONFIG.chainId;
+      // Request personal signature signature to confirm ownership
+      const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'UTC' });
+      const signMessageText = 
+        `Selamat datang di Orvix!\n\n` +
+        `Silakan tanda tangani pesan ini untuk mengonfirmasi kepemilikan dompet Anda.\n\n` +
+        `Tindakan ini sepenuhnya gratis dan tidak menggunakan biaya gas.\n\n` +
+        `Alamat Dompet:\n${userAddress}\n\n` +
+        `Waktu (UTC):\n${timestamp}`;
+      
       try {
-        const signer = await browserProvider.getSigner();
-        userAddress = await signer.getAddress();
-        const network = await browserProvider.getNetwork();
-        chainIdNum = Number(network.chainId);
-      } catch (e) {
-        console.warn("Using fallback signer details:", e);
+        await signer.signMessage(signMessageText);
+      } catch (signErr: any) {
+        console.warn("Wallet signature rejected:", signErr);
+        throw new Error("Persetujuan tanda tangan ditolak. Koneksi dompet dibatalkan.");
       }
 
       setProvider(browserProvider);
@@ -264,7 +271,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('orvix_connected_address', userAddress);
       setIsModalOpen(false);
     } catch (err: any) {
-      console.error('Failed to connect wallet:', err);
+      console.warn('Failed to connect wallet:', err);
       alert(err?.message || 'Failed to connect wallet');
     }
   };
